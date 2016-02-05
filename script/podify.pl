@@ -45,11 +45,8 @@ sub generate {
 
 sub init {
   my $self = shift;
-  $self->{attrs} = {};
-  $self->{code}  = [];
-  $self->{data}  = [];
-  $self->{pod}   = [];
-  $self->{subs}  = {};
+  $self->{$_} = [] for qw(code data pod);
+  $self->{$_} = {} for qw(attrs subs);
   $self;
 }
 
