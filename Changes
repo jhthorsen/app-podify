@@ -1,4 +1,5 @@
 Revision history for perl distribution App-podify
 
 0.01 Not Released
- - Started project
+ - Can move POD to bottom
+ - Can add POD to new modules
