@@ -98,13 +98,16 @@ sub post_process {
 }
 
 app {
-  my $self = shift->init;
+  my ($self, @paths) = @_;
 
-  $self->{perl_module} = shift or die $self->_script->print_help, "Module is required.\n";
-  $self->parse;
-  $self->post_process;
-  $self->generate;
-  $self->check_pod;
+  while (my $path = shift @paths) {
+    $self->init;
+    $self->{perl_module} = $path or die $self->_script->print_help, "Module is required.\n";
+    $self->parse;
+    $self->post_process;
+    $self->generate;
+    $self->check_pod;
+  }
 
   return 0;
 };
