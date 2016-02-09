@@ -1,9 +1,17 @@
 #!/usr/bin/env perl
 use Applify;
+
+use File::Find;
+use File::Spec;
+
 use if -e '.ship.conf', lib => 'lib';
 
 option bool => i    => 'Replace source',            0;
 option str  => eopm => 'End of perl module marker', '^1;';
+
+option bool => recursive  => 'Recurse into directories in source list', 0, (
+  alias => 'r'
+);
 
 documentation 'App::podify';
 
@@ -100,13 +108,26 @@ sub post_process {
 app {
   my ($self, @paths) = @_;
 
-  while (my $path = shift @paths) {
-    $self->init;
-    $self->{perl_module} = $path or die $self->_script->print_help, "Module is required.\n";
-    $self->parse;
-    $self->post_process;
-    $self->generate;
-    $self->check_pod;
+  while (my $path = File::Spec->canonpath(shift @paths)) {
+    if (-d $path) {
+        File::Find::find({
+          no_chdir  => 1,
+          wanted    => sub {
+            $File::Find::prune = 1 if -d $File::Find::name && !$self->recursive;
+            $File::Find::prune = 0 if $File::Find::name eq $path;
+            return if $File::Find::prune;
+            push @paths, $File::Find::name if $File::Find::name =~ m/[.] pm \z/msx;
+          }
+        }, $path);
+    }
+    else {
+      $self->init;
+      $self->{perl_module} = $path or die $self->_script->print_help, "Module is required.\n";
+      $self->parse;
+      $self->post_process;
+      $self->generate;
+      $self->check_pod;
+    }
   }
 
   return 0;
