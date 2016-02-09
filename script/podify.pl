@@ -6,12 +6,10 @@ use File::Spec;
 
 use if -e '.ship.conf', lib => 'lib';
 
-option bool => i    => 'Replace source',            0;
-option str  => eopm => 'End of perl module marker', '^1;';
-
-option bool => recursive  => 'Recurse into directories in source list', 0, (
-  alias => 'r'
-);
+option bool => i => 'Replace source', 0;
+option bool => recursive => 'Recurse into directories in source list',
+  0, (alias => 'r');
+option str => eopm => 'End of perl module marker', '^1;';
 
 documentation 'App::podify';
 
@@ -25,6 +23,26 @@ sub check_pod {
   }
 
   return $self;
+}
+
+sub find_files {
+  my ($self, $path) = @_;
+  my @files;
+
+  File::Find::find(
+    {
+      no_chdir => 1,
+      wanted   => sub {
+        $File::Find::prune = 1 if -d $File::Find::name and !$self->recursive;
+        $File::Find::prune = 0 if $File::Find::name eq $path;
+        return if $File::Find::prune;
+        push @files, $File::Find::name if $File::Find::name =~ m/[.] pm \z/msx;
+      }
+    },
+    $path
+  );
+
+  return sort { length $a <=> length $b } @files;
 }
 
 sub generate {
@@ -108,21 +126,17 @@ sub post_process {
 app {
   my ($self, @paths) = @_;
 
+  unless (@paths) {
+    die $self->_script->print_help, "No input files specified.\n";
+  }
+
   while (my $path = File::Spec->canonpath(shift @paths)) {
     if (-d $path) {
-        File::Find::find({
-          no_chdir  => 1,
-          wanted    => sub {
-            $File::Find::prune = 1 if -d $File::Find::name && !$self->recursive;
-            $File::Find::prune = 0 if $File::Find::name eq $path;
-            return if $File::Find::prune;
-            push @paths, $File::Find::name if $File::Find::name =~ m/[.] pm \z/msx;
-          }
-        }, $path);
+      push @paths, $self->find_files($path);
     }
     else {
       $self->init;
-      $self->{perl_module} = $path or die $self->_script->print_help, "Module is required.\n";
+      $self->{perl_module} = $path;
       $self->parse;
       $self->post_process;
       $self->generate;

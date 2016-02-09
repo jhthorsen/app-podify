@@ -18,8 +18,17 @@ App::podify - Add POD to your modules
 
 =head1 SYNOPSIS
 
+  # Print processed module to STDOUT
   $ podify lib/My/Module.pm
-  $ podify lib/My/Module.pm -i
+
+  # Replace module
+  $ podify -i lib/My/Module.pm
+
+  # Process all files in the lib/ directory
+  $ podify -i lib/
+
+  # Process all files in the lib/ directory recursively
+  $ podify -r -i lib/
 
 =head1 DESCRIPTION
 
