@@ -4,10 +4,10 @@ use Test::More;
 
 plan skip_all => './t is not a directory' unless -d 't';
 
-my $podify    = do 'script/podify.pl' or die $@;
-my $inline_pm = File::Spec->catfile(qw(t InlineModule.pm));
-my $nopod_pm  = File::Spec->catfile(qw(t NoPOD.pm));
-my $cool_pm   = File::Spec->catfile(qw(t recursive CoolModule.pm));
+my $podify = do 'script/podify.pl' or die $@;
+my $inline_pm = join '/', qw(t InlineModule.pm);
+my $nopod_pm  = join '/', qw(t NoPOD.pm);
+my $cool_pm   = join '/', qw(t recursive CoolModule.pm);
 
 is_deeply([$podify->find_files('t')], [$nopod_pm, $inline_pm], 'find_files');
 

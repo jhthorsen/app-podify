@@ -1,5 +1,8 @@
 Revision history for perl distribution App-podify
 
+0.02 2016-03-10T22:35:56+0100
+ - File::Find report paths with "/"
+
 0.01 2016-02-09T08:21:54+0100
  - Can move POD to bottom
  - Can add POD to new modules

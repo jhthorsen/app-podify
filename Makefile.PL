@@ -16,5 +16,5 @@ WriteMakefile(
   },
   BUILD_REQUIRES => {'Test::More' => '0.88'},
   PREREQ_PM      => {'Applify'    => '0.12', 'perl' => 'v5.10.0'},
-  test           => {TESTS        => 't/*.t'},
+  test           => {TESTS        => (-e 'META.yml' ? 't/*.t' : 't/*.t xt/*.t')},
 );

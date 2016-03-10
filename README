@@ -2,7 +2,7 @@ NAME
     App::podify - Add POD to your modules
 
 VERSION
-    0.01
+    0.02
 
 SYNOPSIS
       # Print processed module to STDOUT
