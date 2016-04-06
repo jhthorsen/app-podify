@@ -6,6 +6,8 @@ use File::Spec;
 
 my $podify = do 'script/podify.pl' or die $@;
 
+$ENV{PODIFY_AUTHOR} = 'superman';
+
 $podify->{perl_module} = File::Spec->catfile(dirname(__FILE__), 'NoPOD.pm');
 $podify->init;
 $podify->parse;

@@ -112,7 +112,7 @@ sub pod_template {
     map({ sprintf "=head2 %s\n\n", delete $self->{attrs}{$_} } sort keys %{$self->{attrs} || {}}),
     sprintf("=head1 METHODS\n\n"),
     map({ sprintf "=head2 %s\n\n", delete $self->{subs}{$_} } sort keys %{$self->{subs} || {}}),
-    sprintf("=head1 AUTHOR\n\n%s\n\n", (getpwuid $<)[6] || (getpwuid $<)[0]),
+    sprintf("=head1 AUTHOR\n\n%s\n\n", $ENV{PODIFY_AUTHOR} || (getpwuid $<)[6] || (getpwuid $<)[0]),
     sprintf("=head1 COPYRIGHT AND LICENSE\n\nTODO\n\n"),
     sprintf("=head1 SEE ALSO\n\nTODO\n\n"),
   ];

@@ -2,7 +2,7 @@ package App::podify;
 use strict;
 use warnings;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 1;
 
@@ -14,7 +14,7 @@ App::podify - Add POD to your modules
 
 =head1 VERSION
 
-0.02
+0.03
 
 =head1 SYNOPSIS
 
